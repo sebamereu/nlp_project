@@ -3,19 +3,27 @@ import re
 import pandas as pd
 import spacy
 import json
-from sklearn.model_selection import train_test_split
 
 # Caricamento del modello SpaCy per l'analisi linguistica
 nlp = spacy.load('en_core_web_sm')
 
-# Funzione per rimuovere punteggiatura, stop words e link
+# Lista di parole da rimuovere (blacklist personalizzata)
+words_to_remove = {"www", "com", "gov", "https", "http", "org", "net", "edu", "uk", "t"}
+
+# Funzione per il preprocessing
 def preprocess_text(text):
-    # Rimuovere URL
-    text = re.sub(r'http\S+|www\S+', '', text)
+    # Convertire tutto in lowercase
+    text = text.lower()
     
-    # Elaborazione con spaCy per tokenizzare e rimuovere stopwords e punteggiatura
+    # Rimuovere URL
+    text = re.sub(r'http\S+|www\S+|[a-zA-Z0-9.-]+\.(com|org|net|gov|edu)', '', text)
+    
+    # Tokenizzazione e filtraggio con spaCy
     doc = nlp(text)
-    processed_tokens = [token.text for token in doc if not token.is_stop and not token.is_punct]
+    processed_tokens = [
+        token.text for token in doc 
+        if not token.is_stop and not token.is_punct and token.is_alpha and token.text not in words_to_remove
+    ]
     
     # Restituire il testo rielaborato come una stringa di token separati da spazi
     return ' '.join(processed_tokens)
@@ -30,7 +38,7 @@ with open(file_path, 'r', encoding='utf-8') as file:
 # Creare un DataFrame
 df = pd.DataFrame(data)
 
-# Applicare la funzione di preprocessing sul testo
+# Applicare la funzione di preprocessing al testo
 df['processed_text'] = df['text'].apply(preprocess_text)
 
 # Visualizzare un esempio di risultato
