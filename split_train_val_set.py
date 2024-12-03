@@ -5,7 +5,7 @@ import json
 from sklearn.model_selection import train_test_split
 
 # Percorso del file originale
-file_path = "C:/Users/sebam/Desktop/NLP/progettoMereuNLP/pan-clef-2024-oppositional-main/pan-clef-2024-oppositional-main/dataset/dataset_en_test.json"
+file_path = "C:/Users/sebam/Desktop/NLP/progettoMereuNLP/pan-clef-2024-oppositional-main/pan-clef-2024-oppositional-main/dataset/dataset_en_processed.json"
 
 # Caricare il dataset
 with open(file_path, 'r', encoding='utf-8') as file:
