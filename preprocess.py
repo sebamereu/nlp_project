@@ -4,65 +4,63 @@ import pandas as pd
 import spacy
 import json
 
-# Load SpaCy linguistic analysis model
+# Load the SpaCy language model for linguistic analysis
 nlp = spacy.load('en_core_web_sm')
 
-# Custom blacklist of words to remove
-words_to_remove = {
+# Custom list of additional stopwords (optional)
+custom_stopwords = {
     "www", "com", "gov", "https", "http", "org", 
     "net", "edu", "uk", "t"
 }
 
 def preprocess_text(text):
     """
-    Perform comprehensive text preprocessing using SpaCy.
-    
-    Key preprocessing steps:
-    1. Convert text to lowercase
-    2. Remove URLs and web-related strings
-    3. Tokenize and filter text using SpaCy
-    4. Remove stopwords, punctuation, and specified words
+    Perform text preprocessing in several steps:
+    - Convert text to lowercase
+    - Remove punctuation and special characters
+    - Tokenize text
+    - Remove stopwords and irrelevant tokens
     
     Args:
-        text (str): Input text to be preprocessed
+        text (str): Input text to preprocess
     
     Returns:
         str: Preprocessed text as a space-separated string of tokens
     """
-    # Convert to lowercase
+    # Normalize text: convert to lowercase
     text = text.lower()
     
-    # Remove URLs and web-related strings
+    # Remove URLs and special characters
     text = re.sub(
-        r'http\S+|www\S+|[a-zA-Z0-9.-]+\.(com|org|net|gov|edu)', 
+        r'http\S+|www\S+|[a-zA-Z0-9.-]+\.(com|org|net|gov|edu)|[^a-zA-Z\s]', 
         '', 
         text
     )
     
-    # Tokenize and filter with SpaCy
+    # Tokenize and filter using SpaCy
     doc = nlp(text)
-    processed_tokens = [
+    tokens = [
         token.text for token in doc 
         if (
-            not token.is_stop and 
-            not token.is_punct and 
-            token.is_alpha and 
-            token.text not in words_to_remove
+            not token.is_stop and  # Remove stopwords
+            not token.is_punct and  # Remove punctuation
+            token.is_alpha and  # Keep only alphabetic tokens
+            token.text not in custom_stopwords  # Remove custom stopwords
         )
     ]
     
-    # Return processed text as a space-separated string
-    return ' '.join(processed_tokens)
+    # Return the preprocessed text as a single string
+    return ' '.join(tokens)
 
 def main():
-    # Path to the original dataset
+    # Path to the dataset
     file_path = (
         "C:/Users/sebam/Desktop/NLP/progettoMereuNLP/"
         "pan-clef-2024-oppositional-main/"
-        "pan-clef-2024-oppositional-main/dataset/dataset_en_test.json"
+        "pan-clef-2024-oppositional-main/dataset/dataset_en_train.json"
     )
 
-    # Load dataset
+    # Load the dataset
     try:
         with open(file_path, 'r', encoding='utf-8') as file:
             data = json.load(file)
@@ -70,20 +68,23 @@ def main():
         print(f"Error: File not found at {file_path}")
         return
     except json.JSONDecodeError:
-        print(f"Error: Invalid JSON format in {file_path}")
+        print(f"Error: Invalid JSON format at {file_path}")
         return
 
-    # Create DataFrame
+    # Convert the dataset to a pandas DataFrame
     df = pd.DataFrame(data)
 
-    # Apply preprocessing to text
+    # Preprocess the text column
+    if 'text' not in df.columns:
+        print("Error: 'text' column does not exist in the dataset.")
+        return
     df['processed_text'] = df['text'].apply(preprocess_text)
 
-    # Display preprocessed text example
+    # Display an example of preprocessed text
     print("Example of preprocessed text:")
     print(df[['text', 'processed_text']].head())
 
-    # Prepare output directory
+    # Save the preprocessed dataset
     output_dir = (
         "C:/Users/sebam/Desktop/NLP/progettoMereuNLP/"
         "pan-clef-2024-oppositional-main/"
@@ -91,7 +92,6 @@ def main():
     )
     os.makedirs(output_dir, exist_ok=True)
 
-    # Save preprocessed data
     processed_file = os.path.join(output_dir, "dataset_en_processed.json")
     df.to_json(
         processed_file, 
