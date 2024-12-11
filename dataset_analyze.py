@@ -15,7 +15,7 @@ except LookupError:
 from nltk.tokenize import word_tokenize
 
 class DatasetAnalyzer:
-    def __init__(self, file_path, plot_dir='plot'):
+    def __init__(self, file_path, base_plot_dir='plot'):
         
         # Validate the file
         if not os.path.exists(file_path):
@@ -32,19 +32,19 @@ class DatasetAnalyzer:
         self.df = pd.DataFrame(self.data)
         self.validate_columns(['category', 'text'])  # Check for required columns
         
-        # Create directory for plots
-        self.plot_dir = plot_dir
-        if not os.path.exists(self.plot_dir):
-            os.makedirs(self.plot_dir)
+        # Extract dataset name for titles and directories
+        self.dataset_name = os.path.splitext(os.path.basename(file_path))[0]
+        
+        # Create a specific directory for plots based on the dataset name
+        self.plot_dir = os.path.join(base_plot_dir, self.dataset_name)
+        os.makedirs(self.plot_dir, exist_ok=True)
 
     def validate_columns(self, required_columns):
-        
         missing_columns = [col for col in required_columns if col not in self.df.columns]
         if missing_columns:
             raise ValueError(f"The dataset is missing the required columns: {', '.join(missing_columns)}")
 
     def analyze_class_distribution(self):
-       
         class_distribution = self.df['category'].value_counts()
         class_percentages = class_distribution / len(self.df) * 100
 
@@ -56,14 +56,16 @@ class DatasetAnalyzer:
 
         print("\n1. Class Distribution:")
         print(self.stats_df)
-        
+        print(f"\nDataset Size: {len(self.df)}")
+        print(f"Class Counts:\n{class_distribution}")
+
         # Save statistics
         self.stats_df.to_csv(os.path.join(self.plot_dir, 'class_distribution.csv'), index=False)
 
         # Plot class distribution
         plt.figure(figsize=(10, 6))
         sns.barplot(x='Class', y='Count', hue='Class', data=self.stats_df, palette='viridis', dodge=False)
-        plt.title('Class Distribution in the Dataset')
+        plt.title(f'Class Distribution in the {self.dataset_name}')
         plt.xlabel('Classes')
         plt.ylabel('Count')
         plt.tight_layout()
@@ -71,7 +73,6 @@ class DatasetAnalyzer:
         plt.close()
 
     def analyze_text_characteristics(self):
-        
         self.df['text_length'] = self.df['text'].str.len()
         self.df['word_count'] = self.df['text'].apply(lambda x: len(word_tokenize(x)))
 
@@ -91,13 +92,13 @@ class DatasetAnalyzer:
         plt.figure(figsize=(12, 5))
         plt.subplot(1, 2, 1)
         sns.boxplot(data=self.df, x='category', y='text_length', palette='Set3')
-        plt.title('Text Length Distribution')
+        plt.title(f'Text Length Distribution in the {self.dataset_name}')
         plt.xlabel('Classes')
         plt.ylabel('Text Length (characters)')
 
         plt.subplot(1, 2, 2)
         sns.boxplot(data=self.df, x='category', y='word_count', palette='Set2')
-        plt.title('Word Count Distribution')
+        plt.title(f'Word Count Distribution in the {self.dataset_name}')
         plt.xlabel('Classes')
         plt.ylabel('Number of Words')
 
@@ -106,7 +107,6 @@ class DatasetAnalyzer:
         plt.close()
 
     def analyze_vocabulary_overview(self):
-        
         def count_unique_words(texts):
             all_words = ' '.join(texts).split()
             return len(set(all_words))
@@ -123,7 +123,6 @@ class DatasetAnalyzer:
         vocab_stats.to_csv(os.path.join(self.plot_dir, 'vocabulary_stats.csv'))
 
     def full_analysis(self, perform_distribution=True, perform_text_analysis=True, perform_vocabulary=True):
-        
         if perform_distribution:
             self.analyze_class_distribution()
         if perform_text_analysis:
@@ -136,7 +135,7 @@ class DatasetAnalyzer:
 def parse_args():
     parser = argparse.ArgumentParser(description="Dataset Analyzer")
     parser.add_argument('--file_path', type=str, required=True, help='Path to the dataset JSON file')
-    parser.add_argument('--plot_dir', type=str, default='plot', help='Directory to save plots')
+    parser.add_argument('--plot_dir', type=str, default='plot', help='Base directory to save plots')
     parser.add_argument('--skip_distribution', action='store_true', help='Skip class distribution analysis')
     parser.add_argument('--skip_text_analysis', action='store_true', help='Skip text characteristics analysis')
     parser.add_argument('--skip_vocabulary', action='store_true', help='Skip vocabulary overview analysis')

@@ -65,7 +65,7 @@ def split_dataset(df, test_size=0.2, random_state=42):
 def main():
     # Paths
     base_path = "C:/Users/sebam/Desktop/NLP/progettoMereuNLP/pan-clef-2024-oppositional-main/pan-clef-2024-oppositional-main/dataset"
-    input_file = os.path.join(base_path, "dataset_en_processed.json")
+    input_file = os.path.join(base_path, "dataset_en_train_processed.json")
     output_dir = base_path
 
     # Load preprocessed dataset

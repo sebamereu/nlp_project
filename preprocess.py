@@ -52,23 +52,23 @@ def preprocess_text(text):
     # Return the preprocessed text as a single string
     return ' '.join(tokens)
 
-def main():
-    # Path to the dataset
-    file_path = (
-        "C:/Users/sebam/Desktop/NLP/progettoMereuNLP/"
-        "pan-clef-2024-oppositional-main/"
-        "pan-clef-2024-oppositional-main/dataset/dataset_en_train.json"
-    )
-
+def preprocess_file(input_file, output_file):
+    """
+    Preprocess the input dataset and save it to a new file.
+    
+    Args:
+        input_file (str): Path to the input dataset file.
+        output_file (str): Path to save the preprocessed dataset.
+    """
     # Load the dataset
     try:
-        with open(file_path, 'r', encoding='utf-8') as file:
+        with open(input_file, 'r', encoding='utf-8') as file:
             data = json.load(file)
     except FileNotFoundError:
-        print(f"Error: File not found at {file_path}")
+        print(f"Error: File not found at {input_file}")
         return
     except json.JSONDecodeError:
-        print(f"Error: Invalid JSON format at {file_path}")
+        print(f"Error: Invalid JSON format at {input_file}")
         return
 
     # Convert the dataset to a pandas DataFrame
@@ -76,31 +76,39 @@ def main():
 
     # Preprocess the text column
     if 'text' not in df.columns:
-        print("Error: 'text' column does not exist in the dataset.")
+        print(f"Error: 'text' column does not exist in the dataset {input_file}.")
         return
     df['processed_text'] = df['text'].apply(preprocess_text)
 
-    # Display an example of preprocessed text
-    print("Example of preprocessed text:")
-    print(df[['text', 'processed_text']].head())
-
     # Save the preprocessed dataset
-    output_dir = (
-        "C:/Users/sebam/Desktop/NLP/progettoMereuNLP/"
-        "pan-clef-2024-oppositional-main/"
-        "pan-clef-2024-oppositional-main/dataset"
-    )
-    os.makedirs(output_dir, exist_ok=True)
-
-    processed_file = os.path.join(output_dir, "dataset_en_processed.json")
+    os.makedirs(os.path.dirname(output_file), exist_ok=True)
     df.to_json(
-        processed_file, 
+        output_file, 
         orient='records', 
         lines=True, 
         force_ascii=False
     )
+    print(f"Preprocessed dataset saved to: {output_file}")
 
-    print(f"\nPreprocessed dataset saved to: {processed_file}")
+def main():
+    base_path = "C:/Users/sebam/Desktop/NLP/progettoMereuNLP/" \
+                "pan-clef-2024-oppositional-main/" \
+                "pan-clef-2024-oppositional-main/dataset/"
+
+    # Paths for training and test datasets
+    train_file = os.path.join(base_path, "dataset_en_train.json")
+    train_output = os.path.join(base_path, "dataset_en_train_processed.json")
+
+    test_file = os.path.join(base_path, "dataset_en_test.json")
+    test_output = os.path.join(base_path, "dataset_en_test_processed.json")
+
+    # Preprocess training dataset
+    print("Processing training dataset...")
+    preprocess_file(train_file, train_output)
+
+    # Preprocess test dataset
+    print("Processing test dataset...")
+    preprocess_file(test_file, test_output)
 
 if __name__ == "__main__":
     main()
