@@ -109,8 +109,8 @@ def analyze_ngrams(df: pd.DataFrame, dataset_type: str, output_dir: str) -> dict
 def main():
     # Paths
     base_path = "C:/Users/sebam/Desktop/NLP/progettoMereuNLP/pan-clef-2024-oppositional-main/pan-clef-2024-oppositional-main/dataset"
-    train_file = os.path.join(base_path, "train_set.json")
-    val_file = os.path.join(base_path, "validation_set.json")
+    train_file = os.path.join(base_path, "dataset_en_train_processed.json")
+    val_file = os.path.join(base_path, "dataset_en_test_processed.json")
     output_dir = os.path.join(base_path, "ngrams_analysis")
     
     # Ensure output directory exists

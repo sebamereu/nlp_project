@@ -3,9 +3,18 @@ import re
 import pandas as pd
 import spacy
 import json
+import unicodedata
+from nltk.stem import PorterStemmer
+import nltk
+
+# Download necessary NLTK resources
+nltk.download('punkt', quiet=True)
 
 # Load the SpaCy language model for linguistic analysis
 nlp = spacy.load('en_core_web_sm')
+
+# Initialize Porter Stemmer
+porter_stemmer = PorterStemmer()
 
 # Custom list of additional stopwords (optional)
 custom_stopwords = {
@@ -13,13 +22,32 @@ custom_stopwords = {
     "net", "edu", "uk", "t"
 }
 
+def unicode_to_ascii(text):
+    """
+    Convert Unicode characters to their closest ASCII representation.
+    
+    Args:
+        text (str): Input text with potential Unicode characters
+    
+    Returns:
+        str: Text with Unicode characters replaced by ASCII equivalents
+    """
+    # Normalize Unicode characters
+    normalized = unicodedata.normalize('NFKD', text)
+    
+    # Remove non-ASCII characters and decode to ASCII
+    ascii_text = normalized.encode('ascii', 'ignore').decode('utf-8')
+    
+    return ascii_text
+
 def preprocess_text(text):
     """
-    Perform text preprocessing in several steps:
-    - Convert text to lowercase
-    - Remove punctuation and special characters
-    - Tokenize text
-    - Remove stopwords and irrelevant tokens
+    Perform comprehensive text preprocessing:
+    - Convert Unicode to ASCII
+    - Convert to lowercase
+    - Remove URLs and special characters
+    - Remove stopwords, punctuation, and single-letter words
+    - Apply Porter stemming
     
     Args:
         text (str): Input text to preprocess
@@ -27,30 +55,38 @@ def preprocess_text(text):
     Returns:
         str: Preprocessed text as a space-separated string of tokens
     """
-    # Normalize text: convert to lowercase
+    # Convert Unicode to ASCII
+    text = unicode_to_ascii(text)
+    
+    # Normalize text: convert to lowercase (already done in unicode_to_ascii)
     text = text.lower()
     
     # Remove URLs and special characters
     text = re.sub(
-        r'http\S+|www\S+|[a-zA-Z0-9.-]+\.(com|org|net|gov|edu)|[^a-zA-Z\s]', 
+        r'http\S+|www\S+|[a-zA-Z0-9.-]+\.(com|org|net|gov|edu)', 
         '', 
         text
     )
     
-    # Tokenize and filter using SpaCy
+    # Tokenize using SpaCy
     doc = nlp(text)
+    
+    # Filter and process tokens
     tokens = [
-        token.text for token in doc 
+        porter_stemmer.stem(token.text) for token in doc 
         if (
             not token.is_stop and  # Remove stopwords
             not token.is_punct and  # Remove punctuation
-            token.is_alpha and  # Keep only alphabetic tokens
+            (token.is_alpha or token.is_digit) and  # Keep alphabetic and numeric tokens
+            len(token.text) > 1 and  # Remove single-letter words
             token.text not in custom_stopwords  # Remove custom stopwords
         )
     ]
     
     # Return the preprocessed text as a single string
     return ' '.join(tokens)
+
+# Rest of the script remains the same as in the previous version
 
 def preprocess_file(input_file, output_file):
     """
