@@ -230,6 +230,7 @@ class DatasetAnalyzer:
 
     def analyze_stylometric_features(self):
         # Extract stylometric features for each text
+        #CORE della funzione
         stylometric_features = self.df['text'].apply(self.stylometric_extractor.extract_all_features)
         
         # Convert features to DataFrame
