@@ -24,7 +24,7 @@ from sklearn.pipeline import Pipeline
 # Paths to JSON files
 TRAIN_JSON_PATH = r"C:\Users\sebam\Desktop\NLP\progettoMereuNLP\pan-clef-2024-oppositional-main\pan-clef-2024-oppositional-main\dataset\dataset_en_train_processed.json"
 TEST_JSON_PATH = r"C:\Users\sebam\Desktop\NLP\progettoMereuNLP\pan-clef-2024-oppositional-main\pan-clef-2024-oppositional-main\dataset\dataset_en_test_processed.json"
-PLOT_DIR = r"C:\Users\sebam\Desktop\NLP\progettoMereuNLP\pan-clef-2024-oppositional-main\pan-clef-2024-oppositional-main\dataset\plot"
+PLOT_DIR = r"C:\Users\sebam\Desktop\NLP\progettoMereuNLP\pan-clef-2024-oppositional-main\pan-clef-2024-oppositional-main\results\plot"
 
 # Ensure the plot directory exists
 os.makedirs(PLOT_DIR, exist_ok=True)
@@ -169,15 +169,3 @@ with open(os.path.join(PLOT_DIR, "vectorization_comparison_results.json"), "w") 
 
 print(f"\nComprehensive results saved to {os.path.join(PLOT_DIR, 'vectorization_comparison_results.json')}")
 print("Comparison plots and confusion matrices saved in the plot directory.")
-
-# Interpretation notes
-print("\n--- Vectorization Technique Comparison Notes ---")
-print("1. Bag of Words (CountVectorizer):")
-print("   - Simple word frequency representation")
-print("   - Treats all words equally")
-print("   - Good for smaller datasets")
-print("\n2. TF-IDF (Term Frequency-Inverse Document Frequency):")
-print("   - Considers word importance across the entire corpus")
-print("   - Gives higher weight to rare, more meaningful words")
-print("   - Often performs better on larger or more complex datasets")
-print("\nRecommendation: Compare the generated plots and JSON results to determine the best technique for your specific dataset.")
