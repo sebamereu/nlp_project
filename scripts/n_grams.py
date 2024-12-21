@@ -111,7 +111,7 @@ def main():
     base_path = "C:/Users/sebam/Desktop/NLP/progettoMereuNLP/pan-clef-2024-oppositional-main/pan-clef-2024-oppositional-main/dataset"
     train_file = os.path.join(base_path, "dataset_en_train_processed.json")
     val_file = os.path.join(base_path, "dataset_en_test_processed.json")
-    output_dir = os.path.join(base_path, "ngrams_analysis")
+    output_dir = os.path.join(base_path, "results/ngrams_analysis")
     
     # Ensure output directory exists
     os.makedirs(output_dir, exist_ok=True)
