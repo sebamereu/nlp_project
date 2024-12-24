@@ -1,64 +1,111 @@
-This repository contains code with utilities, baselines, instructions, and guidelines for the
-PAN CLEF 2024 shared task "Oppositional thinking analysis: Conspiracy vs critical narratives"
-https://pan.webis.de/clef24/pan24-web/oppositional-thinking-analysis.html
+Oppositional Thinking Analysis: Conspiracy Theories vs Critical Thinking Narratives
 
-The code is licensed under the APACHE 2.0 license, see LICENSE file.
-The exception is the span_f1_metric.py file, which is licensed under the GPL license, see the file for details.
-The data is licensed under the CC BY-SA 4.0 license, see the LICENSE-DATA file for details.
+This repository contains the implementation for analyzing and classifying texts into two categories: conspiracy theories and critical thinking narratives, as part of the PAN 2024 Subtask 1. The project leverages natural language processing (NLP) techniques to preprocess datasets, analyze n-grams, and classify texts using both traditional machine learning models and modern transformer-based models such as DistilBERT.
 
-This document contains the high-level overview of the code,
-and the instructions to setup the environment for the project.
+Project Structure
 
-For the details of the data, see README-DATA,
-for the conceptual overview of the task, and the guidelines and possible approaches for the participants,
-see the slides in pan2024_oppositional_overview_guidelines.pdf
+Datasets
 
-For the details on the evaluation metrics and procedure, see the README-EVALUATION file.
+Provided Dataset: The original dataset is sourced from the repository linked to the PAN 2024 task.
 
-IMPORTANT: keep up with the updates on the official repository,
-as the code and especially the README files might be improved and updated.
+Synthetic Dataset: A synthetic dataset is included in the dataset folder. It can also be generated using the script generate_synth_dataset.py if GPT APIs are available.
 
+Key Scripts (in scripts folder):
 
-# 1. High-level Overview
+dataset_analyze.py: Performs an analysis of the chosen dataset, including class distributions and other statistics.
 
-The code is organized into three packages:
+preprocess.py: Preprocesses the raw dataset by removing stopwords, punctuation, and performing other text-cleaning tasks.
 
-- data_tools
-loading and preprocessing of the data
+ngrams.py: Conducts an n-gram analysis of the dataset to extract meaningful patterns.
 
-- classif_experim
-baselines for the classification task, and the supporting functionality
+generate_synth_dataset.py: Generates a synthetic dataset based on the real dataset using GPT APIs.
 
-- sequence_labeling
-baselines for the sequence labeling task, and the supporting functionality
+stat_similarity.py: Calculates semantic similarity metrics between the real and synthetic datasets.
 
-- getting started
-First, create and modify the local variants of .gitignore and setting.py (from templates)
-only templates are git-tracked, to facilitate the local setup
-Second, setup the environment (see below). Third, run the experiments (see below).
+classification.py: Implements text classification and evaluation using traditional classifiers and DistilBERT.
 
+Setup Instructions
 
-# 2. Setup of the environment using conda
+1. Prerequisites
 
-conda create --name env-name python=3.X # 3.10 is recommended
-conda activate env-name
-# from the root of the repository
-./generate_requirements.sh  # mind the additional dependencies, see the code
+Ensure you have Python 3.8+ and conda installed.
+
+2. Create a Virtual Environment
+
+Run the following commands to set up a virtual environment and install dependencies:
+
+conda create --name nlp_env python=3.8
+conda activate nlp_env
 pip install -r requirements.txt
 
-If you will be relying on spacy docs as input format while working
-with the seq. labeling baseline (this is the default so you probably will), do:
-python -m spacy download en_core_web_sm
-python -m spacy download es_core_news_sm
+3. Dataset Preparation
 
+Download the dataset folder and place it at the same level as config.json in the project directory.
 
-# 3. Running the experiments
-Rename setting_template.py to settings.py and fill in the paths to the dataset files.
+4. Configuration
 
-python entrypoint for running the classification experiment (subtask 1) is:
-classif_experiment_runner.run_classif_experiments
+The config.json file contains essential configurations for the project.
 
-python entrypoint for running the seq. labeling experiment () is:
-seqlabel_experiment_runner.run_seqlab_experiments
-CLI entrypoint is the seqlabel_experiment_runner.main,
-you can run the module as in: run_seqlabel.sh.template, create the local .sh copy first
+Usage
+
+Dataset Analysis
+
+To analyze the dataset:
+
+python scripts/dataset_analyze.py
+
+Preprocessing
+
+To preprocess the dataset:
+
+python scripts/preprocess.py
+
+N-gram Analysis
+
+To perform n-gram analysis:
+
+python scripts/ngrams.py
+
+Generate Synthetic Dataset
+
+To create a synthetic dataset (requires GPT API access):
+
+python scripts/generate_synth_dataset.py
+
+Semantic Similarity
+
+To calculate semantic similarity between datasets:
+
+python scripts/stat_similarity.py
+
+Classification
+
+To train and evaluate models on the dataset:
+
+python scripts/classification.py
+
+Key Features
+
+Preprocessing: Automated cleaning of datasets to improve analysis and classification performance.
+
+N-gram Analysis: Extraction and visualization of key patterns from text data.
+
+Synthetic Dataset Creation: Utilizes GPT APIs to augment data for improved training.
+
+Semantic Similarity: Quantifies the alignment between real and synthetic datasets.
+
+Multi-model Classification: Combines traditional classifiers and DistilBERT for robust text classification.
+
+Results and Evaluation
+
+The classification script produces detailed metrics for both traditional classifiers and DistilBERT, including accuracy, precision, recall, and F1 scores.
+
+License
+
+This project is licensed under the MIT License. See the LICENSE file for details.
+
+Acknowledgments
+
+PAN 2024 organizers for providing the dataset and task structure.
+
+OpenAI for the GPT API used in synthetic dataset generation.
