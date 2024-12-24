@@ -1,111 +1,92 @@
-Oppositional Thinking Analysis: Conspiracy Theories vs Critical Thinking Narratives
+# Oppositional Thinking Analysis: Conspiracy Theories vs Critical Thinking Narratives
 
-This repository contains the implementation for analyzing and classifying texts into two categories: conspiracy theories and critical thinking narratives, as part of the PAN 2024 Subtask 1. The project leverages natural language processing (NLP) techniques to preprocess datasets, analyze n-grams, and classify texts using both traditional machine learning models and modern transformer-based models such as DistilBERT.
+This repository contains the implementation for analyzing and classifying texts into two categories: **conspiracy theories** and **critical thinking narratives**, as part of the PAN 2024 Subtask 1. The project leverages natural language processing (NLP) techniques to preprocess datasets, analyze n-grams, and classify texts using both traditional machine learning models and modern transformer-based models such as DistilBERT.
 
-Project Structure
+## Project Structure
 
-Datasets
+### Datasets
+- **Provided Dataset:** The original dataset is sourced from the repository linked to the PAN 2024 task.
+- **Synthetic Dataset:** A synthetic dataset is included in the `dataset` folder. It can also be generated using the script `generate_synth_dataset.py` if GPT APIs are available.
 
-Provided Dataset: The original dataset is sourced from the repository linked to the PAN 2024 task.
+### Key Scripts (in `scripts` folder):
+1. **`dataset_analyze.py`:** Performs an analysis of the chosen dataset, including class distributions and other statistics.
+2. **`preprocess.py`:** Preprocesses the raw dataset by removing stopwords, punctuation, and performing other text-cleaning tasks.
+3. **`ngrams.py`:** Conducts an n-gram analysis of the dataset to extract meaningful patterns.
+4. **`generate_synth_dataset.py`:** Generates a synthetic dataset based on the real dataset using GPT APIs.
+5. **`stat_similarity.py`:** Calculates semantic similarity metrics between the real and synthetic datasets.
+6. **`classification.py`:** Implements text classification and evaluation using traditional classifiers and DistilBERT.
 
-Synthetic Dataset: A synthetic dataset is included in the dataset folder. It can also be generated using the script generate_synth_dataset.py if GPT APIs are available.
+## Setup Instructions
 
-Key Scripts (in scripts folder):
+### 1. Prerequisites
+- Ensure you have **Python 3.8+** and **conda** installed.
 
-dataset_analyze.py: Performs an analysis of the chosen dataset, including class distributions and other statistics.
-
-preprocess.py: Preprocesses the raw dataset by removing stopwords, punctuation, and performing other text-cleaning tasks.
-
-ngrams.py: Conducts an n-gram analysis of the dataset to extract meaningful patterns.
-
-generate_synth_dataset.py: Generates a synthetic dataset based on the real dataset using GPT APIs.
-
-stat_similarity.py: Calculates semantic similarity metrics between the real and synthetic datasets.
-
-classification.py: Implements text classification and evaluation using traditional classifiers and DistilBERT.
-
-Setup Instructions
-
-1. Prerequisites
-
-Ensure you have Python 3.8+ and conda installed.
-
-2. Create a Virtual Environment
-
+### 2. Create a Virtual Environment
 Run the following commands to set up a virtual environment and install dependencies:
-
+```bash
 conda create --name nlp_env python=3.8
 conda activate nlp_env
 pip install -r requirements.txt
+```
 
-3. Dataset Preparation
+### 3. Dataset Preparation
+- Download the `dataset` folder and place it at the same level as `config.json` in the project directory.
 
-Download the dataset folder and place it at the same level as config.json in the project directory.
+### 4. Configuration
+- The `config.json` file contains essential configurations for the project.
 
-4. Configuration
+## Usage
 
-The config.json file contains essential configurations for the project.
-
-Usage
-
-Dataset Analysis
-
+### Dataset Analysis
 To analyze the dataset:
-
+```bash
 python scripts/dataset_analyze.py
+```
 
-Preprocessing
-
+### Preprocessing
 To preprocess the dataset:
-
+```bash
 python scripts/preprocess.py
+```
 
-N-gram Analysis
-
+### N-gram Analysis
 To perform n-gram analysis:
-
+```bash
 python scripts/ngrams.py
+```
 
-Generate Synthetic Dataset
-
+### Generate Synthetic Dataset
 To create a synthetic dataset (requires GPT API access):
-
+```bash
 python scripts/generate_synth_dataset.py
+```
 
-Semantic Similarity
-
+### Semantic Similarity
 To calculate semantic similarity between datasets:
-
+```bash
 python scripts/stat_similarity.py
+```
 
-Classification
-
+### Classification
 To train and evaluate models on the dataset:
-
+```bash
 python scripts/classification.py
+```
 
-Key Features
+## Key Features
+- **Preprocessing:** Automated cleaning of datasets to improve analysis and classification performance.
+- **N-gram Analysis:** Extraction and visualization of key patterns from text data.
+- **Synthetic Dataset Creation:** Utilizes GPT APIs to augment data for improved training.
+- **Semantic Similarity:** Quantifies the alignment between real and synthetic datasets.
+- **Multi-model Classification:** Combines traditional classifiers and DistilBERT for robust text classification.
 
-Preprocessing: Automated cleaning of datasets to improve analysis and classification performance.
-
-N-gram Analysis: Extraction and visualization of key patterns from text data.
-
-Synthetic Dataset Creation: Utilizes GPT APIs to augment data for improved training.
-
-Semantic Similarity: Quantifies the alignment between real and synthetic datasets.
-
-Multi-model Classification: Combines traditional classifiers and DistilBERT for robust text classification.
-
-Results and Evaluation
-
+## Results and Evaluation
 The classification script produces detailed metrics for both traditional classifiers and DistilBERT, including accuracy, precision, recall, and F1 scores.
 
-License
+## License
+This project is licensed under the MIT License. See the `LICENSE` file for details.
 
-This project is licensed under the MIT License. See the LICENSE file for details.
+## Acknowledgments
+- PAN 2024 organizers for providing the dataset and task structure.
+- OpenAI for the GPT API used in synthetic dataset generation.
 
-Acknowledgments
-
-PAN 2024 organizers for providing the dataset and task structure.
-
-OpenAI for the GPT API used in synthetic dataset generation.
